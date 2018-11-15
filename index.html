@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Angular Modal Forms</title>
+    <link rel="stylesheet" href="/home/hushenbeg/project1/view/view.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+        crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.9.0.js"></script>
+    <script src="../controller/userController.js"></script>
+    <!-- <script src="../service/userService.js"></script> -->
+    <style>
+
+    </style>
+</head>
+
+<body ng-app="userModule">
+    <div ng-controller="modalAccountFormController" ng-init="init()">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="col-lg-12">
+                <ul class="nav navbar-nav">
+                    <li><a href="#">HOME</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                        <li><button type="button" class="btn btn-primary" ng-click="saveUpdateUserModel()">Create User</button></li>
+                    <li><button type="button" class="btn" ng-click="listView=true;gridView=false"><i class="fas fa-list-ul"></i></button></li>
+                    <li><button type="button" class="btn" ng-click="gridView=true;listView=false"><i class="fas fa-th"></i></button></li>
+                    <li><button type="button" class="btn"><i class="fas fa-sync-alt"></i></button></li>
+                </ul>
+                </div>
+            </div>
+        </nav>
+        <div ng-show="gridView" ng-init="gridView=true">
+            <div class="row">
+                <div class="page-body">
+                    <div class="col-lg-12">
+                        <div class="col-lg-4" ng-repeat="data in products">
+                            <div class="panel panel-default">
+                                <div class="panel-heading">
+                                    <span> GROUP NAME: {{data.groupName}} </span>
+                                    <span class="pull-right">
+                                        <span type="button" class="btn btn-info btn-xs" ng-click="saveUpdateUserModel(data)"
+                                            data-toggle="modal" data-target="#updateModal">
+                                            <span class="glyphicon glyphicon-pencil"></span> Edit</span>
+                                        <span type="button" class="btn btn-xs btn-danger" ng-click="removeProduct(data)">
+                                            <span class="glyphicon glyphicon-trash"></span> Delete</span>
+                                    </span>
+                                </div>
+                                <div class="panel-body">Group Number: {{data.groupNumber}} </div>
+                                <div class="panel-body">User Name:{{data.username}} </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-show="listView" ng-init="false">
+            <table width=70%>
+                <th>GROUP NAME</th>
+                <th>GROUP NUMBER</th>
+                <th>USERNAME</th>
+                <th>ACTIONS</th>
+                <tr ng-repeat="data in products">
+                    <td>{{data.groupName}}</td>
+                    <td>{{data.groupNumber}}</td>
+                    <td>{{data.username}}</td>
+                    <td> <span type="button" class="btn btn-info btn-xs" ng-click="saveUpdateUserModel(data)"
+                            data-toggle="modal" data-target="#updateModal">
+                            <span class="glyphicon glyphicon-pencil"></span></span>
+                        <span type="button" class="btn btn-xs btn-danger" ng-click="removeProduct(data)">
+                            <span class="glyphicon glyphicon-trash"></span></span></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script type="text/ng-template" id="modal-form.html">
+    <div id="modal-form.html">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" ng-click="cancel()">&times;</button>
+            <h4 class="modal-title">Create User</h4>
+        </div>
+        <form name="userForm" novalidate>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Group Name</label>
+                    <input type="text" name="name" class="form-control" ng-model="userData.groupName" ng-minlength="5" maxlength="25" ng-pattern="/^[A-z0-9-_. ]+$/" required>
+                    <span class="text-red" ng-show="userForm.name.$error.minlength">Name Should Be Greater Than 5 Characters</span>
+                    <span class="text-red" ng-show="userForm.name.$error.maxlength">Name Should Be Less Than 25 Characters</span>
+                    <span class="text-red" ng-show="userForm.name.$dirty && userForm.name.$error.pattern">Special Characters (#,$..) are not allowed.</span>
+                    <span class="text-red" ng-show="userForm.submited && userForm.name.$error.required ||userForm.name.$dirty && userForm.name.$error.required">*Name is required....</span>
+                </div>
+                <div class="form-group">
+                        <label>Group Number</label>
+                        <input type="text" name="number" class="form-control" ng-model="userData.groupNumber" ng-minlength="3" maxlength="25" ng-pattern="/^[0-9-_. ]+$/" required>
+                        <span class="text-red" ng-show="userForm.number.$error.minlength">Group Number Should Be Greater Than 3 Characters</span>
+                        <span class="text-red" ng-show="userForm.number.$error.maxlength">Name Should Be Less Than 25 Characters</span>
+                        <span class="text-red" ng-show="userForm.number.$dirty && userForm.name.$error.pattern">Special Characters (#,$..) and alphabets are not allowed.</span>
+                        <span class="text-red" ng-show="userForm.submited && userForm.number.$error.required ||userForm.number.$dirty && userForm.number.$error.required">*Name is required....</span>
+                </div>
+                <div class="form-group">
+                        <div><label>Status</label></div>
+                        <label class="radio-inline">
+                            <input type="radio" name="optradio" value="active" checked>Active
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name="optradio" value="inactive">Inactive
+                        </label>
+                    </div>
+                <div style="padding-bottom: 10px;color: blueviolet"><strong>USER DETAILS</strong></div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" class="form-control" ng-model="userData.username" ng-minlength="5" maxlength="15" ng-pattern="/^[A-z0-9-_. ]+$/" required>
+                    <span class="text-red" ng-show="userForm.username.$error.minlength">Username Should Be Greater Than 5 Characters</span>
+                    <span class="text-red" ng-show="userForm.username.$error.maxlength">Username Should Be Less Than 15 Characters</span>
+                    <span class="text-red" ng-show="userForm.username.$dirty && userForm.username.$error.pattern">Special Characters (#,$..) are not allowed.</span>
+                    <span class="text-red" ng-show="userForm.username.$dirty && userForm.username.$error.required || userForm.submited && userForm.username.$error.required">Username is required ...</span>
+                </div>
+            </div>
+
+            <div class="row" ng-if="userError">
+                <span>{{userError}} </span>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-info btn-sm" ng-if='!userData._id' ng-click="saveUpdateUser(userForm)" >Create</button>
+                <button type="button" class="btn btn-info btn-sm" ng-if='userData._id' ng-click="saveUpdateUser(userForm)" >Update</button>
+                <button type="button" class="btn btn-info btn-sm" ng-click="cancel()">Cancel</button>
+            </div>
+        </form>
+    </div>
+    </script>
+</body>
+
+</html>
